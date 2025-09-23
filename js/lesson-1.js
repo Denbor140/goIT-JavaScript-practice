@@ -116,13 +116,14 @@
 // if (userLogin === "Адмін") {
 //   const userPassword = prompt("Введіть пароль:");
 
-//   if (userPassword === null || userPassword === "") {
-//     alert("Скасовано");
-//   } else if (userPassword === "Я головний") {
+//   if (userPassword === "Я головний") {
 //     alert("Добрий день!");
 //   } else {
 //     alert("Невірний пароль!");
 //   }
+// } else if (!userLogin.trim()) {
+//   /// якщо НЕлогін - не "Андмін" + забираємо пробіли, бо якщо поставити пробіл = "я вас не знаю"
+//   alert("Скасовано");
 // } else {
 //   alert("Я вас не знаю");
 // }
