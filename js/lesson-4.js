@@ -94,11 +94,9 @@ if (h1Elem) {
 // це використовувати рядки з тегами і дозволити браузеру зробити всю важку роботу".
 // тобто, потрібно створити елемент LI потім наповнити H3 та P і готову LI закинути у кінець списку
 const ulElem = document.querySelector("ul");
-console.log(ulElem);
 
 if (ulElem) {
   const createLi = document.createElement("li");
-
   const createH3 = document.createElement("h3");
   const createP = document.createElement("p");
   createH3.textContent = "Властивість innerHTML";
@@ -144,14 +142,121 @@ for (let i = 0; i < 100; i++) {
   numberContainer.textContent = numRandom;
   if (numRandom % 2 === 0) {
     numberContainer.classList.add("even");
-    numberContainer.style.backgroundColor = "green";
-    numberContainer.style.color = "white";
   } else {
     numberContainer.classList.add("odd");
-    numberContainer.style.backgroundColor = "yellow";
-    numberContainer.style.color = "red";
   }
   divContainer.appendChild(numberContainer);
 }
 
 bodyElem2.append(divContainer);
+
+// Form Events, Input, Focus, Blur and Submit.
+
+// Використовуй шаблон форми з файлу html.
+
+// 1 - При події `input`, якщо користувач ввів в поле більше
+// 6 символів то додати клас `success`. Якщо ж символів менше аніж 6,
+// то клас `error`
+const inptElem = document.querySelector(".js-username-input");
+
+inptElem.addEventListener("input", (e) => {
+  if (e.currentTarget.value.length > 6) {
+    inptElem.classList.add("success");
+    inptElem.classList.remove("error");
+  } else {
+    inptElem.classList.add("error");
+    inptElem.classList.remove("success");
+  }
+});
+
+// 2 - При події `focus` зроби перевірку на пустоту поля інпута,
+// якщо ж поле пусте, то зроби `outline` => `'3px solid red'`,
+// якщо при фокусі поле непусте, то `outline` => `'3px solid green'`
+const inptElem2 = document.querySelector(".js-username-input");
+inptElem2.addEventListener("focus", (e) => {
+  if (e.currentTarget.value === "") {
+    e.currentTarget.style.outline = "3px solid red";
+  } else {
+    e.currentTarget.style.outline = "3px solid green";
+  }
+});
+
+// 3 - При події `blur` зроби перевірку на пустоту поля інпута,
+// якщо ж поле пусте, то зроби `outline` => `'3px solid red'`,
+// якщо при фокусі поле непусте, то `outline` => `'3px solid lime'`
+
+const inptElem3 = document.querySelector(".js-username-input");
+inptElem3.addEventListener("blur", (e) => {
+  if (e.currentTarget.value === "") {
+    e.currentTarget.style.outline = "3px solid red";
+  } else {
+    e.currentTarget.style.outline = "3px solid lime";
+  }
+});
+
+// 4 - При події `submit`. Відміни поведінку браузера по змовчуванню.
+// Дістань данні з інпуту і чек боксу, зроби перевірку, що інпут не порожній, також, що нажатий чек бокс у положення true,
+// якщо користувач все виконав вірно, збери данні (userName) у обьект і виведи у консоль.
+// У разі, якщо користувач не виконав одну із умов, виведи повідомлення.
+// Також при події інпут реалізуй додавання ім`я користувача у span, замість слова "Anonymous".
+// Якщо користувач ввів ім`я, а потім видалив, зроби так, щоб на місце повернулось дефолтне знаяення "Anonymous".
+// При відправці форми, очисти інпут, верни чек бокс у положення false, верни дефолтне значення "Anonymous" у span.
+const formElem = document.querySelector(".js-contact-form");
+const inptElem4 = document.querySelector(".js-username-input");
+const output = document.querySelector(".js-username-output");
+
+function formSubmit(e) {
+  e.preventDefault();
+
+  const userFormData = new FormData(formElem);
+  const userData = {
+    name: userFormData.get("userName").trim(),
+    accept: Boolean(userFormData.get("accept")),
+    //можна ще userFormData.get("accept") === "on"
+    // або !!userFormData.get("accept")
+  };
+
+  if (userData.name === "") {
+    return alert("Ім'я не заповнено");
+  } else if (userData.accept === false) {
+    return alert("Погодтесь із політикою конфіденційності");
+  }
+  console.log(userData);
+
+  formElem.reset();
+  output.textContent = "Anonymous";
+}
+function inputValue(e) {
+  const value = e.currentTarget.value.trim();
+
+  if (value === "") {
+    output.textContent = "Anonymous";
+  } else {
+    output.textContent = value;
+  }
+}
+
+formElem.addEventListener("submit", formSubmit);
+inptElem4.addEventListener("input", inputValue);
+
+// Використовуй шаблон розмітки з файлу html та напиши наступний функціонал:
+// При кліку на кнопку "Зменшити" квадрат стає меньшим на 20 пікселів,
+// При кліку на кнопку "Збільшити" - квадрат стає більшим на 20 пікселів.
+const boxElem = document.querySelector(".box");
+console.dir(boxElem);
+
+const bDecrease = document.querySelector(".js-decrease");
+const bIncrease = document.querySelector(".js-increase");
+
+bDecrease.addEventListener("click", (e) => {
+  const newWidth = 20;
+  const currentWidth = parseInt(getComputedStyle(boxElem).width);
+  boxElem.style.width = currentWidth - newWidth + "px";
+  boxElem.style.height = currentWidth - newWidth + "px";
+});
+bIncrease.addEventListener("click", (e) => {
+  const newWidth = 20;
+  const currentWidth = parseInt(getComputedStyle(boxElem).width);
+  boxElem.style.width = currentWidth + newWidth + "px";
+  boxElem.style.height = currentWidth + newWidth + "px";
+});
