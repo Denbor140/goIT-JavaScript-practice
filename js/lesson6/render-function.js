@@ -29,7 +29,7 @@ export function renderProductsItem(products) {
 }
 
 export function renderModalProduct(product) {
-  const markup = `<img class="modal-product__img" src="${product.thumbnail}" alt="${product.tags}" />
+  const markup = `<img class="modal-product__img" src="${product.images[0]}" alt="${product.tags}" />
       <div class="modal-product__content">
         <p class="modal-product__title">${product.title}</p>
         <ul class="modal-product__tags">${product.tags}</ul>
