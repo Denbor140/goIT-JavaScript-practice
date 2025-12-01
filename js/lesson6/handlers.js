@@ -3,9 +3,12 @@ import {
   getProductsItem,
   getProductsCategoryByClick,
   getProductsByValue,
+  getProductsById,
 } from './products-api.js';
 import { renderCategoriesItem, renderProductsItem } from './render-function.js';
 import { refs } from './refs.js';
+import { updateCounters } from './modal.js';
+import { getItemLocalStorage, getItemLocalStorageWishlist } from './storage.js';
 
 export const renderHomePage = async () => {
   try {
@@ -22,6 +25,8 @@ export const renderHomePage = async () => {
   } catch (err) {
     console.log(err);
   }
+
+  updateCounters();
 };
 
 export const renderByCategories = async e => {
@@ -90,4 +95,43 @@ export const clearSearchFrom = async () => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const renderWishlistPage = async () => {
+  const wishlist = getItemLocalStorageWishlist();
+
+  try {
+    const promises = wishlist.map(id => getProductsById(id));
+    const data = await Promise.all(promises);
+    renderProductsItem(data);
+  } catch (err) {
+    console.log(err);
+  }
+
+  updateCounters();
+};
+
+export const renderCartPage = async () => {
+  const cart = getItemLocalStorage();
+  try {
+    const promises = cart.map(id => getProductsById(id));
+    const data = await Promise.all(promises);
+    renderProductsItem(data);
+
+    const price = data
+      .map(cart => cart.price)
+      .reduce((total, price) => total + price, 0)
+      .toFixed(2);
+
+    refs.spanItemSummary.textContent = data.length;
+    refs.spanPriceSummary.textContent = `$${+price}`;
+  } catch (err) {
+    console.log(err);
+  }
+
+  updateCounters();
+};
+
+export const byProducts = () => {
+  alert('Дякуюємо за купівлю');
 };

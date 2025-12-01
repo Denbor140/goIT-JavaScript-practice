@@ -24,3 +24,5 @@ document.addEventListener('keydown', handleModalEvents);
 // //////////////////////////////////
 refs.form.addEventListener('submit', seachOnForm);
 refs.formBtnClear.addEventListener('click', clearSearchFrom);
+
+// ///////////////////////////////////

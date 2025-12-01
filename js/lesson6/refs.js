@@ -7,4 +7,11 @@ export const refs = {
   modalClose: document.querySelector('.modal__close-btn'),
   form: document.querySelector('.search-form'),
   formBtnClear: document.querySelector('.search-form__btn-clear'),
+  addToCartBtn: document.querySelector('.modal-product__btn--cart'),
+  addToWishlistBtn: document.querySelector('.modal-product__btn--wishlist'),
+  spanCountCart: document.querySelector('.nav__count[data-cart-count]'),
+  spanCountWishlist: document.querySelector('.nav__count[data-wishlist-count]'),
+  spanItemSummary: document.querySelector('.cart-summary__value[data-count]'),
+  spanPriceSummary: document.querySelector('.cart-summary__value[data-price]'),
+  cartSummaryBtn: document.querySelector('.cart-summary__btn'),
 };
