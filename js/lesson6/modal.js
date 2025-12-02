@@ -9,6 +9,7 @@ import {
 } from './storage.js';
 
 import { renderCartPage } from './handlers.js';
+import { clearGallery } from './helpers.js';
 
 let idCart;
 
@@ -58,6 +59,7 @@ export function handleModalEvents(e) {
   const isAddToCartBtn = e.target.classList.contains(
     'modal-product__btn--cart'
   );
+
   const isAddToWishlistBtn = e.target.classList.contains(
     'modal-product__btn--wishlist'
   );
@@ -74,16 +76,18 @@ export function handleModalEvents(e) {
     if (!cart.includes(cartId)) {
       cart.push(cartId);
       setItemLocalStorage(cart);
-
       e.target.textContent = 'Remove from Cart';
     } else {
       cart = cart.filter(id => id !== cartId);
       setItemLocalStorage(cart);
       e.target.textContent = 'Add to cart';
-
-      removeProductFromDOM(cartId);
-      renderCartPage();
+    }
+    // Видаляємо з картки товар, тільки якщо сторінка cart
+    if (window.location.pathname.includes('cart')) {
       closeModal();
+      removeProductFromDOM(cartId);
+      clearGallery();
+      renderCartPage();
     }
 
     updateCartCounter();
@@ -123,7 +127,7 @@ export function updateCounters() {
   updateWishlistCounter();
 }
 
-function removeProductFromDOM(id) {
+export function removeProductFromDOM(id) {
   const li = refs.products.querySelector(`li[data-id="${id}"]`);
   if (li) {
     li.remove();

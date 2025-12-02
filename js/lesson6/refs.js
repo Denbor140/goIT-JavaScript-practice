@@ -14,4 +14,7 @@ export const refs = {
   spanItemSummary: document.querySelector('.cart-summary__value[data-count]'),
   spanPriceSummary: document.querySelector('.cart-summary__value[data-price]'),
   cartSummaryBtn: document.querySelector('.cart-summary__btn'),
+  loader: document.querySelector('.loader'),
+  themeBtn: document.querySelector('.theme-toggle-btn'),
+  body: document.querySelector('body'),
 };

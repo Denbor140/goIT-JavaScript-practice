@@ -3,6 +3,7 @@ import {
   renderByCategories,
   seachOnForm,
   clearSearchFrom,
+  changeTheme,
 } from './handlers.js';
 import { refs } from './refs.js';
 import { modalOpen, handleModalEvents } from './modal.js';
@@ -26,3 +27,4 @@ refs.form.addEventListener('submit', seachOnForm);
 refs.formBtnClear.addEventListener('click', clearSearchFrom);
 
 // ///////////////////////////////////
+refs.themeBtn.addEventListener('click', changeTheme);
