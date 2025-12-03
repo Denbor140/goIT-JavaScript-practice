@@ -4,6 +4,7 @@ import {
   getProductsCategoryByClick,
   getProductsByValue,
   getProductsById,
+  limit,
 } from './products-api.js';
 import { renderCategoriesItem, renderProductsItem } from './render-function.js';
 import { refs } from './refs.js';
@@ -14,7 +15,17 @@ import {
   getItemLocalStorageTheme,
   setItemLocalStorageTheme,
 } from './storage.js';
-import { showLoader, hideLoader, clearGallery } from './helpers.js';
+import {
+  showLoader,
+  hideLoader,
+  clearGallery,
+  showLoadMoreButton,
+  hideLoadMoreButton,
+} from './helpers.js';
+
+let page = 1;
+let currentCategory = null;
+let query = '';
 
 export const renderHomePage = async () => {
   const theme = getItemLocalStorageTheme();
@@ -24,7 +35,11 @@ export const renderHomePage = async () => {
     refs.body.setAttribute('data-theme', 'dark');
   }
 
+  page = 1;
+
   showLoader();
+  hideLoadMoreButton();
+  clearGallery();
 
   try {
     const [categories, products] = await Promise.all([
@@ -35,6 +50,8 @@ export const renderHomePage = async () => {
     categories.unshift('All');
     renderCategoriesItem(categories);
     renderProductsItem(products.products);
+
+    if (products.total > limit) showLoadMoreButton();
   } catch (err) {
     console.log(err);
   } finally {
@@ -51,7 +68,13 @@ export const renderHomePage = async () => {
 
   // try {
   //   const data = await getProductsItem();
-  //   renderProductsItem(data.products);
+
+  //   if (data.total < limit) {
+  //     hideLoadMoreButton();
+  //   } else {
+  //     showLoadMoreButton();
+  //     renderProductsItem(data.products);
+  //   }
   // } catch (err) {
   //   console.log(err);
   // } finally {
@@ -65,31 +88,40 @@ export const renderByCategories = async e => {
   if (e.target.nodeName !== 'BUTTON') return;
 
   const selectCategory = e.target.textContent;
+  currentCategory = selectCategory === 'All' ? null : selectCategory;
   const btnCategory = refs.categories.querySelectorAll('.categories__btn');
   btnCategory.forEach(btn => btn.classList.remove('categories__btn--active'));
 
   e.target.classList.add('categories__btn--active');
 
-  clearGallery();
+  page = 1;
+
   showLoader();
+  hideLoadMoreButton();
+  clearGallery();
+  refs.notFound.classList.remove('not-found--visible');
+  refs.form.reset();
 
   try {
     let data;
-    if (selectCategory === 'All') {
-      const allData = await getProductsItem();
+    let total;
+    if (currentCategory === null) {
+      const allData = await getProductsItem(page);
       data = allData.products;
+      total = allData.total;
     } else {
-      const categotyData = await getProductsCategoryByClick(selectCategory);
+      const categotyData = await getProductsCategoryByClick(currentCategory);
       data = categotyData.products;
+      total = categotyData.total;
     }
 
     if (!data || data.length === 0) {
-      refs.products.innerHTML = '';
       refs.notFound.classList.add('not-found--visible');
     } else {
-      refs.notFound.classList.remove('not-found--visible');
       renderProductsItem(data);
     }
+
+    if (total > limit) showLoadMoreButton();
   } catch (err) {
     console.log(err);
   } finally {
@@ -101,24 +133,34 @@ export const seachOnForm = async e => {
   e.preventDefault();
 
   const formData = new FormData(refs.form);
-  const query = formData.get('searchValue').trim();
+  query = formData.get('searchValue').trim();
 
   if (!query) {
     alert('Поле для пошуку не може бути пустим');
     return;
   }
 
-  clearGallery();
+  currentCategory = null;
+  page = 1;
+
+  const btnCategory = refs.categories.querySelectorAll('.categories__btn');
+  btnCategory.forEach(btn => btn.classList.remove('categories__btn--active'));
   showLoader();
+  hideLoadMoreButton();
+  clearGallery();
+  refs.notFound.classList.remove('not-found--visible');
+
   try {
     const data = await getProductsByValue(query);
 
     if (!data.products || data.products.length === 0) {
-      refs.products.innerHTML = '';
       refs.notFound.classList.add('not-found--visible');
     } else {
-      refs.notFound.classList.remove('not-found--visible');
       renderProductsItem(data.products);
+    }
+
+    if (data.total > limit) {
+      showLoadMoreButton();
     }
   } catch (err) {
     console.log(err);
@@ -128,11 +170,13 @@ export const seachOnForm = async e => {
 };
 
 export const clearSearchFrom = async () => {
-  clearGallery();
   showLoader();
+  hideLoadMoreButton();
+  clearGallery();
+  refs.notFound.classList.remove('not-found--visible');
+  refs.form.reset();
+
   try {
-    refs.form.reset();
-    refs.notFound.classList.remove('not-found--visible');
     const data = await getProductsItem();
     renderProductsItem(data.products);
   } catch (err) {
@@ -143,6 +187,13 @@ export const clearSearchFrom = async () => {
 };
 
 export const renderWishlistPage = async () => {
+  const theme = getItemLocalStorageTheme();
+
+  refs.body.removeAttribute('data-theme');
+  if (theme === 'dark') {
+    refs.body.setAttribute('data-theme', 'dark');
+  }
+
   const wishlist = getItemLocalStorageWishlist();
 
   showLoader();
@@ -160,7 +211,14 @@ export const renderWishlistPage = async () => {
   updateCounters();
 };
 
-export const renderCartPage = async e => {
+export const renderCartPage = async () => {
+  const theme = getItemLocalStorageTheme();
+
+  refs.body.removeAttribute('data-theme');
+  if (theme === 'dark') {
+    refs.body.setAttribute('data-theme', 'dark');
+  }
+
   const cart = getItemLocalStorage();
 
   showLoader();
@@ -199,5 +257,44 @@ export function changeTheme() {
   } else {
     refs.body.setAttribute('data-theme', 'dark');
     setItemLocalStorageTheme('dark');
+  }
+}
+
+export async function getLoadMoreData() {
+  hideLoadMoreButton();
+  showLoader();
+
+  page += 1;
+
+  try {
+    let moreData;
+
+    if (currentCategory === null && !query) {
+      moreData = await getProductsItem(page);
+    } else if (currentCategory) {
+      moreData = await getProductsCategoryByClick(currentCategory, page);
+    } else if (query) {
+      moreData = await getProductsByValue(query, page);
+    }
+
+    const totalPages = Math.ceil(moreData.total / 12);
+
+    renderProductsItem(moreData.products);
+    window.scrollBy({
+      top: 784,
+      behavior: 'smooth',
+    });
+
+    if (page < totalPages) {
+      showLoadMoreButton();
+    } else {
+      hideLoadMoreButton();
+      alert('Вибачте але більше товарів немає');
+      return;
+    }
+  } catch (err) {
+    console.log(err);
+  } finally {
+    hideLoader();
   }
 }

@@ -25,7 +25,7 @@ export function renderProductsItem(products) {
     )
     .join('');
 
-  refs.products.innerHTML = li;
+  refs.products.insertAdjacentHTML('beforeend', li);
 }
 
 export function renderModalProduct(product) {

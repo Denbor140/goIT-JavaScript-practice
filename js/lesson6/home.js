@@ -4,6 +4,7 @@ import {
   seachOnForm,
   clearSearchFrom,
   changeTheme,
+  getLoadMoreData,
 } from './handlers.js';
 import { refs } from './refs.js';
 import { modalOpen, handleModalEvents } from './modal.js';
@@ -28,3 +29,4 @@ refs.formBtnClear.addEventListener('click', clearSearchFrom);
 
 // ///////////////////////////////////
 refs.themeBtn.addEventListener('click', changeTheme);
+refs.loadMoreBtn.addEventListener('click', getLoadMoreData);

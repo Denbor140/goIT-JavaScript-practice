@@ -985,12 +985,11 @@ img {
   border: 3px dotted rgba(0, 0, 0, 0.5);
   border-style: solid solid dotted dotted;
   border-radius: 50%;
-  display: inline-block;
-  position: absolute;
+  display: block;
+  position: relative;
   box-sizing: border-box;
   animation: rotation 2s linear infinite;
-  left: 50%;
-  top: 50%;
+  margin: 0 auto;
 }
 .loader::after {
   content: '';

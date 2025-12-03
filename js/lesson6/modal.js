@@ -8,7 +8,7 @@ import {
   setItemLocalStorageWishlist,
 } from './storage.js';
 
-import { renderCartPage } from './handlers.js';
+import { renderCartPage, renderWishlistPage } from './handlers.js';
 import { clearGallery } from './helpers.js';
 
 let idCart;
@@ -108,6 +108,14 @@ export function handleModalEvents(e) {
 
       e.target.textContent = 'Add to Wishlist';
     }
+
+    if (window.location.pathname.includes('wishlist')) {
+      closeModal();
+      removeProductFromDOM(wishlistId);
+      clearGallery();
+      renderWishlistPage();
+    }
+
     updateWishlistCounter();
   }
 }

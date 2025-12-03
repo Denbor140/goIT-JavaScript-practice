@@ -13,9 +13,9 @@ export function hideLoader() {
 }
 
 export function showLoadMoreButton() {
-  loadMore.classList.remove('hidden');
+  refs.loadMoreBtn.classList.remove('is-hidden');
 }
 
 export function hideLoadMoreButton() {
-  loadMore.classList.add('hidden');
+  refs.loadMoreBtn.classList.add('is-hidden');
 }

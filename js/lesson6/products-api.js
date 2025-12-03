@@ -1,4 +1,4 @@
-const limit = 12;
+export const limit = 12;
 
 export async function getCategoriesItem() {
   try {

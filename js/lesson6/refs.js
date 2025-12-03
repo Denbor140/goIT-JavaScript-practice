@@ -17,4 +17,6 @@ export const refs = {
   loader: document.querySelector('.loader'),
   themeBtn: document.querySelector('.theme-toggle-btn'),
   body: document.querySelector('body'),
+  loadMoreBtn: document.querySelector('.load-more-btn'),
+  scrollUpBtn: document.querySelector('.scroll-top-btn'),
 };
