@@ -19,3 +19,23 @@ export function showLoadMoreButton() {
 export function hideLoadMoreButton() {
   refs.loadMoreBtn.classList.add('is-hidden');
 }
+
+export function showScrollUpButton() {
+  refs.scrollUpBtn.classList.add('scroll-top-btn--visible');
+}
+
+export function hideScrollUpButton() {
+  refs.scrollUpBtn.classList.remove('scroll-top-btn--visible');
+}
+
+export function scroll() {
+  if (window.scrollY > 400) {
+    showScrollUpButton();
+  } else {
+    hideScrollUpButton();
+  }
+}
+
+export function scrollUp() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}

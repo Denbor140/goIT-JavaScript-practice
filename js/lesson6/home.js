@@ -8,6 +8,7 @@ import {
 } from './handlers.js';
 import { refs } from './refs.js';
 import { modalOpen, handleModalEvents } from './modal.js';
+import { scroll, scrollUp } from './helpers.js';
 
 ///////////////////////////////////////
 
@@ -30,3 +31,7 @@ refs.formBtnClear.addEventListener('click', clearSearchFrom);
 // ///////////////////////////////////
 refs.themeBtn.addEventListener('click', changeTheme);
 refs.loadMoreBtn.addEventListener('click', getLoadMoreData);
+
+// ////////////////////////////
+refs.scrollUpBtn.addEventListener('click', scrollUp);
+window.addEventListener('scroll', scroll);
